@@ -7,25 +7,24 @@
 
 package dxt161330;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class SP9 {
 	public static Random random = new Random();
 	public static int numTrials = 100;
-	
+
 	public static void main(String[] args) {
-		int n = 100; 
-		int choice = 1;
-		
+		int n = 10; 
+		int choice = 2;
+
 		if (args.length > 0) { n = Integer.parseInt(args[0]); }
 		if (args.length > 1) { choice = Integer.parseInt(args[1]); }
-		
+
 		int[] arr = new int[n];
 		for (int i=0; i<n; i++) {
 			arr[i] = i;
 		}
-		
+
 		Timer timer = new Timer();
 		switch (choice) {
 		case 1:
@@ -59,6 +58,39 @@ public class SP9 {
 	}
 
 	public static void mergeSort1(int[] arr) {
+		mergeSortOne(arr, 0, arr.length - 1);
+	}
+
+
+	private static void mergeSortOne(int[] arr, int start, int end) {
+		if (start == end) {
+			return;
+		}
+		int mid = start + (end - start)/2;
+		mergeSortOne(arr, start, mid);
+		mergeSortOne(arr, mid + 1, end);
+		mergeOne(arr, start, mid, end);
+	}
+
+	private static void mergeOne(int[] arr, int start, int mid, int end) {
+
+		// Initializing two arrays leftArray and rightArray
+		int[] lArray = new int[mid - start + 1];
+		int[] rArray = new int[end - mid];
+
+		System.arraycopy(arr, start, lArray, 0, mid - start + 1);
+		System.arraycopy(arr, mid + 1, rArray, 0, end - mid);
+
+		int lIndex = 0; // Index for lArray
+		int rIndex = 0; // Index for rArray
+
+		for(int k = start; k <= end; k++) {
+			if ( (rIndex >= (rArray.length)) || ( (lIndex < lArray.length) && (lArray[lIndex] <= rArray[rIndex]) ) ) {
+				arr[k] = lArray[lIndex++];
+			} else {
+				arr[k] = rArray[rIndex++];
+			}
+		}
 	}
 
 
