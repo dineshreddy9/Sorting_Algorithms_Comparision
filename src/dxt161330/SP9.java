@@ -16,7 +16,7 @@ public class SP9 {
 
 	public static void main(String[] args) {
 		int n = 100; 
-		int choice = 3;
+		int choice = 4;
 
 		if (args.length > 0) { n = Integer.parseInt(args[0]); }
 		if (args.length > 1) { choice = Integer.parseInt(args[1]); }
@@ -44,13 +44,58 @@ public class SP9 {
 				Shuffle.shuffle(arr);
 				mergeSort2(arr);
 			}
-			//System.out.println(Arrays.toString(arr));
-			break;  // etc
+			break; 
+		case 4:
+			for(int i=0; i<numTrials; i++) {
+				Shuffle.shuffle(arr);
+				mergeSort3(arr);
+			}
+			break;
 		} 
 		timer.end();
 		timer.scale(numTrials);
 
 		System.out.println("Choice: " + choice + "\n" + timer);
+	}
+
+	private static void mergeSort3(int[] arr) {
+		int[] tempArray = new int[arr.length];
+		System.arraycopy(arr, 0, tempArray, 0, arr.length);
+		mergeSortThree(arr, tempArray, 0, arr.length - 1);
+	}
+
+	private static void mergeSortThree(int[] arr, int[] tempArray, int start, int end) {
+		if ((end-start+1) < 16) {
+			insertionSort(arr, start, end);
+		}
+		else {
+			int mid = start + (end - start)/2;
+			mergeSortThree(tempArray, arr, start, mid);
+			mergeSortThree(tempArray, arr, mid + 1, end);
+			mergeThree(arr, tempArray, start, mid, end);
+		}
+	}
+
+	private static void mergeThree(int[] arr, int[] tempArray, int start, int mid, int end) {
+		int i = start;
+		int j = mid + 1;
+		int k = start;
+		
+		while (i <= mid && j <= end) {
+			if (tempArray[i] <= tempArray[j]) {
+				arr[k++] = tempArray[i++];
+			} else {
+				arr[k++] = tempArray[j++];
+			}
+		}
+		
+		while(i <= mid) {
+			arr[k++] = tempArray[i++];
+		}
+		
+		while(j <= end) {
+			arr[k++] = tempArray[j++];
+		}
 	}
 
 	private static void mergeSort2(int[] arr) {
