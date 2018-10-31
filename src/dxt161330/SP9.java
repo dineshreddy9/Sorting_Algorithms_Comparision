@@ -7,15 +7,16 @@
 
 package dxt161330;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class SP9 {
 	public static Random random = new Random();
-	public static int numTrials = 100;
+	public static int numTrials = 1;
 
 	public static void main(String[] args) {
-		int n = 10; 
-		int choice = 2;
+		int n = 100; 
+		int choice = 3;
 
 		if (args.length > 0) { n = Integer.parseInt(args[0]); }
 		if (args.length > 1) { choice = Integer.parseInt(args[1]); }
@@ -37,6 +38,13 @@ public class SP9 {
 				Shuffle.shuffle(arr);
 				mergeSort1(arr);
 			}
+			break; 
+		case 3:
+			for(int i=0; i<numTrials; i++) {
+				Shuffle.shuffle(arr);
+				mergeSort2(arr);
+			}
+			//System.out.println(Arrays.toString(arr));
 			break;  // etc
 		} 
 		timer.end();
@@ -45,12 +53,48 @@ public class SP9 {
 		System.out.println("Choice: " + choice + "\n" + timer);
 	}
 
+	private static void mergeSort2(int[] arr) {
+		int[] tempArray = new int[arr.length];
+		mergeSortTwo(arr, tempArray, 0, arr.length - 1);
+	}
+
+	private static void mergeSortTwo(int[] arr, int[] tempArray, int start, int end) {
+		if ((end-start+1) < 16) {
+			insertionSort(arr, start, end);
+		}
+		else {
+			int mid = start + (end - start)/2;
+			mergeSortTwo(arr, tempArray, start, mid);
+			mergeSortTwo(arr, tempArray, mid + 1, end);
+			mergeTwo(arr, tempArray, start, mid, end);
+		}
+	}
+
+	private static void mergeTwo(int[] arr, int[] tempArray, int start, int mid, int end) {
+		System.arraycopy(arr, start, tempArray, start, end - start + 1);
+		
+		int i = start;
+		int j = mid + 1;
+		
+		for(int k = start; k <= end; k++) {
+			if ( (j > end) || ( (i <= mid) && (tempArray[i] <= tempArray[j]) ) ) {
+				arr[k] = tempArray[i++];
+			} else {
+				arr[k] = tempArray[j++];
+			}
+		}
+	}
+
 	public static void insertionSort(int[] arr) {
+		insertionSort(arr, 0, arr.length - 1);
+	}
+
+	public static void insertionSort(int[] arr, int start, int end) {
 		int element;
 		int j;
-		for (int i = 1; i < arr.length; i++) {
+		for (int i = (start+1); i <= end; i++) {
 			element = arr[i];
-			for (j = (i-1); j >= 0 && element < arr[j]; j--) {
+			for (j = (i-1); j >= start && element < arr[j]; j--) {
 				arr[j+1] = arr[j];
 			}
 			arr[++j] = element;
