@@ -7,14 +7,13 @@
 
 package dxt161330;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class SP9 {
 	 
 	public static Random random = new Random(); // to generate pseudo random numbers
 	public static int numTrials = 100; // to run mergesort 100 times in a loop and take the average time.
-
+	private static int MERGE_SORT_THRESHOLD = 11;
 	public static void main(String[] args) {
 		int n = 10; // size of the array
 		int choice = 1 + random.nextInt(4); 
@@ -34,22 +33,19 @@ public class SP9 {
 			Shuffle.shuffle(arr);
 			numTrials = 1;
 			insertionSort(arr);
-			//System.out.println(Arrays.toString(arr));
 			break;
 		case 2:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
 				mergeSort1(arr);
 			}
-			//System.out.println(Arrays.toString(arr));
-			break; 
+			break;
 		case 3:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
 				mergeSort2(arr);
 			}
-			//System.out.println(Arrays.toString(arr));
-			break; 
+			break;
 		case 4:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
@@ -63,11 +59,21 @@ public class SP9 {
 
 		System.out.println("Choice: " + choice + "\n" + timer);
 	}
-	
+
+	/**
+	 * In-place sort of the array using insertion sort
+	 * @param arr array to be sorted
+	 */
 	public static void insertionSort(int[] arr) {
 		insertionSort(arr, 0, arr.length - 1);
 	}
 
+	/**
+	 * Util function to refactor code so that merge sort can use it
+	 * @param arr array to sort
+	 * @param start start index
+	 * @param end end index
+	 */
 	public static void insertionSort(int[] arr, int start, int end) {
 		int element;
 		int j;
@@ -79,23 +85,39 @@ public class SP9 {
 			arr[++j] = element;
 		}
 	}
-	
+
+	/**
+	 * In-place sort of the array using merge sort take 1
+	 * @param arr array to sort
+	 */
 	public static void mergeSort1(int[] arr) {
-		mergeSortOne(arr, 0, arr.length - 1);
+		mergeSort1(arr, 0, arr.length - 1);
 	}
 
-
-	private static void mergeSortOne(int[] arr, int start, int end) {
+	/**
+	 * Util function for recursive call with merge sort take 1
+	 * @param arr source array
+	 * @param start start index
+	 * @param end end index
+	 */
+	private static void mergeSort1(int[] arr, int start, int end) {
 		if (start == end) {
 			return;
 		}
 		int mid = start + (end - start)/2;
-		mergeSortOne(arr, start, mid);
-		mergeSortOne(arr, mid + 1, end);
-		mergeOne(arr, start, mid, end);
+		mergeSort1(arr, start, mid);
+		mergeSort1(arr, mid + 1, end);
+		merge1(arr, start, mid, end);
 	}
 
-	private static void mergeOne(int[] arr, int start, int mid, int end) {
+	/**
+	 * merges the two parts of the array
+	 * @param arr source array
+	 * @param start start index
+	 * @param mid end of first and start of second array
+	 * @param end end index
+	 */
+	private static void merge1(int[] arr, int start, int mid, int end) {
 
 		// Initializing two arrays leftArray and rightArray
 		int[] lArray = new int[mid - start + 1];
@@ -115,25 +137,44 @@ public class SP9 {
 			}
 		}
 	}
-	
+
+	/**
+	 * In-place sort of the array using merge sort take 2
+	 * @param arr array to sort
+	 */
 	private static void mergeSort2(int[] arr) {
 		int[] tempArray = new int[arr.length];
-		mergeSortTwo(arr, tempArray, 0, arr.length - 1);
+		mergeSort2(arr, tempArray, 0, arr.length - 1);
 	}
 
-	private static void mergeSortTwo(int[] arr, int[] tempArray, int start, int end) {
-		if ((end-start+1) < 16) {
+	/**
+	 * Util function for recursive call with merge sort take 2
+	 * @param arr source array
+	 * @param tempArray temporary array to store elements
+	 * @param start start index
+	 * @param end end index
+	 */
+	private static void mergeSort2(int[] arr, int[] tempArray, int start, int end) {
+		if ((end-start+1) < MERGE_SORT_THRESHOLD) {
 			insertionSort(arr, start, end);
 		}
 		else {
 			int mid = start + (end - start)/2;
-			mergeSortTwo(arr, tempArray, start, mid);
-			mergeSortTwo(arr, tempArray, mid + 1, end);
-			mergeTwo(arr, tempArray, start, mid, end);
+			mergeSort2(arr, tempArray, start, mid);
+			mergeSort2(arr, tempArray, mid + 1, end);
+			merge2(arr, tempArray, start, mid, end);
 		}
 	}
 
-	private static void mergeTwo(int[] arr, int[] tempArray, int start, int mid, int end) {
+	/**
+	 * merges two parts of the array with the help of pre allocated tempArray
+	 * @param arr source array
+	 * @param tempArray temporary array to store elements
+	 * @param start start index
+	 * @param mid end of first and start of second array
+	 * @param end end index
+	 */
+	private static void merge2(int[] arr, int[] tempArray, int start, int mid, int end) {
 		System.arraycopy(arr, start, tempArray, start, end - start + 1);
 		
 		int i = start;
@@ -148,25 +189,44 @@ public class SP9 {
 		}
 	}
 
+	/**
+	 * In-place sort of the array using merge sort take 3
+	 * @param arr array to sort
+	 */
 	private static void mergeSort3(int[] arr) {
 		int[] tempArray = new int[arr.length];
 		System.arraycopy(arr, 0, tempArray, 0, arr.length);
-		mergeSortThree(arr, tempArray, 0, arr.length - 1);
+		mergeSort3(arr, tempArray, 0, arr.length - 1);
 	}
 
-	private static void mergeSortThree(int[] arr, int[] tempArray, int start, int end) {
-		if ((end-start+1) < 16) {
+	/**
+	 * Util function for recursive call with merge sort take 3
+	 * @param arr array to sort
+	 * @param tempArray temp array to store elements
+	 * @param start start index
+	 * @param end end index
+	 */
+	private static void mergeSort3(int[] arr, int[] tempArray, int start, int end) {
+		if ((end-start+1) < MERGE_SORT_THRESHOLD) {
 			insertionSort(arr, start, end);
 		}
 		else {
 			int mid = start + (end - start)/2;
-			mergeSortThree(tempArray, arr, start, mid);
-			mergeSortThree(tempArray, arr, mid + 1, end);
-			mergeThree(arr, tempArray, start, mid, end);
+			mergeSort3(tempArray, arr, start, mid);
+			mergeSort3(tempArray, arr, mid + 1, end);
+			merge3(arr, tempArray, start, mid, end);
 		}
 	}
 
-	private static void mergeThree(int[] arr, int[] tempArray, int start, int mid, int end) {
+	/**
+	 * merges two arrays with the help of pre allocated tempArray
+	 * @param arr source array
+	 * @param tempArray temporary array for elements
+	 * @param start start index
+	 * @param mid end of first and start of second array
+	 * @param end end index
+	 */
+	private static void merge3(int[] arr, int[] tempArray, int start, int mid, int end) {
 		int i = start;
 		int j = mid + 1;
 		int k = start;
@@ -190,13 +250,12 @@ public class SP9 {
 
 
 	/** Timer class for roughly calculating running time of programs
-	 *  @author Dinesh, Kautil
+	 *  @author rbk
 	 *  Usage:  Timer timer = new Timer();
 	 *          timer.start();
 	 *          timer.end();
 	 *          System.out.println(timer);  // output statistics
 	 */
-
 	public static class Timer {
 		long startTime, endTime, elapsedTime, memAvailable, memUsed;
 		boolean ready;
@@ -232,11 +291,10 @@ public class SP9 {
 		}
 	}
 
-	/** @author Dinesh, Kautil : based on algorithm described in a book
+	/**
+	 * Shuffle the elements of an array arr[from..to] randomly
+	 * @author rbk
 	 */
-
-
-	/* Shuffle the elements of an array arr[from..to] randomly */
 	public static class Shuffle {
 
 		public static void shuffle(int[] arr) {
