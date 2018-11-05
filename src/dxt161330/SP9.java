@@ -11,12 +11,13 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class SP9 {
-	public static Random random = new Random();
-	public static int numTrials = 1;
+	 
+	public static Random random = new Random(); // to generate pseudo random numbers
+	public static int numTrials = 100; // to run mergesort 100 times in a loop and take the average time.
 
 	public static void main(String[] args) {
-		int n = 100; 
-		int choice = 4;
+		int n = 10; // size of the array
+		int choice = 1 + random.nextInt(4); 
 
 		if (args.length > 0) { n = Integer.parseInt(args[0]); }
 		if (args.length > 1) { choice = Integer.parseInt(args[1]); }
@@ -27,35 +28,124 @@ public class SP9 {
 		}
 
 		Timer timer = new Timer();
+		//  1.Insertion Sort 	2.Merge sort (take 1) 	3.Merge sort (take 2) 	4. Merge sort (take 3).
 		switch (choice) {
 		case 1:
 			Shuffle.shuffle(arr);
 			numTrials = 1;
 			insertionSort(arr);
+			//System.out.println(Arrays.toString(arr));
 			break;
 		case 2:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
 				mergeSort1(arr);
 			}
+			//System.out.println(Arrays.toString(arr));
 			break; 
 		case 3:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
 				mergeSort2(arr);
 			}
+			//System.out.println(Arrays.toString(arr));
 			break; 
 		case 4:
 			for(int i=0; i<numTrials; i++) {
 				Shuffle.shuffle(arr);
 				mergeSort3(arr);
 			}
+			//System.out.println(Arrays.toString(arr));  
 			break;
 		} 
 		timer.end();
 		timer.scale(numTrials);
 
 		System.out.println("Choice: " + choice + "\n" + timer);
+	}
+	
+	public static void insertionSort(int[] arr) {
+		insertionSort(arr, 0, arr.length - 1);
+	}
+
+	public static void insertionSort(int[] arr, int start, int end) {
+		int element;
+		int j;
+		for (int i = (start+1); i <= end; i++) {
+			element = arr[i];
+			for (j = (i-1); j >= start && element < arr[j]; j--) {
+				arr[j+1] = arr[j];
+			}
+			arr[++j] = element;
+		}
+	}
+	
+	public static void mergeSort1(int[] arr) {
+		mergeSortOne(arr, 0, arr.length - 1);
+	}
+
+
+	private static void mergeSortOne(int[] arr, int start, int end) {
+		if (start == end) {
+			return;
+		}
+		int mid = start + (end - start)/2;
+		mergeSortOne(arr, start, mid);
+		mergeSortOne(arr, mid + 1, end);
+		mergeOne(arr, start, mid, end);
+	}
+
+	private static void mergeOne(int[] arr, int start, int mid, int end) {
+
+		// Initializing two arrays leftArray and rightArray
+		int[] lArray = new int[mid - start + 1];
+		int[] rArray = new int[end - mid];
+
+		System.arraycopy(arr, start, lArray, 0, mid - start + 1);
+		System.arraycopy(arr, mid + 1, rArray, 0, end - mid);
+
+		int lIndex = 0; // Index for lArray
+		int rIndex = 0; // Index for rArray
+
+		for(int k = start; k <= end; k++) {
+			if ( (rIndex >= (rArray.length)) || ( (lIndex < lArray.length) && (lArray[lIndex] <= rArray[rIndex]) ) ) {
+				arr[k] = lArray[lIndex++];
+			} else {
+				arr[k] = rArray[rIndex++];
+			}
+		}
+	}
+	
+	private static void mergeSort2(int[] arr) {
+		int[] tempArray = new int[arr.length];
+		mergeSortTwo(arr, tempArray, 0, arr.length - 1);
+	}
+
+	private static void mergeSortTwo(int[] arr, int[] tempArray, int start, int end) {
+		if ((end-start+1) < 16) {
+			insertionSort(arr, start, end);
+		}
+		else {
+			int mid = start + (end - start)/2;
+			mergeSortTwo(arr, tempArray, start, mid);
+			mergeSortTwo(arr, tempArray, mid + 1, end);
+			mergeTwo(arr, tempArray, start, mid, end);
+		}
+	}
+
+	private static void mergeTwo(int[] arr, int[] tempArray, int start, int mid, int end) {
+		System.arraycopy(arr, start, tempArray, start, end - start + 1);
+		
+		int i = start;
+		int j = mid + 1;
+		
+		for(int k = start; k <= end; k++) {
+			if ( (j > end) || ( (i <= mid) && (tempArray[i] <= tempArray[j]) ) ) {
+				arr[k] = tempArray[i++];
+			} else {
+				arr[k] = tempArray[j++];
+			}
+		}
 	}
 
 	private static void mergeSort3(int[] arr) {
@@ -95,90 +185,6 @@ public class SP9 {
 		
 		while(j <= end) {
 			arr[k++] = tempArray[j++];
-		}
-	}
-
-	private static void mergeSort2(int[] arr) {
-		int[] tempArray = new int[arr.length];
-		mergeSortTwo(arr, tempArray, 0, arr.length - 1);
-	}
-
-	private static void mergeSortTwo(int[] arr, int[] tempArray, int start, int end) {
-		if ((end-start+1) < 16) {
-			insertionSort(arr, start, end);
-		}
-		else {
-			int mid = start + (end - start)/2;
-			mergeSortTwo(arr, tempArray, start, mid);
-			mergeSortTwo(arr, tempArray, mid + 1, end);
-			mergeTwo(arr, tempArray, start, mid, end);
-		}
-	}
-
-	private static void mergeTwo(int[] arr, int[] tempArray, int start, int mid, int end) {
-		System.arraycopy(arr, start, tempArray, start, end - start + 1);
-		
-		int i = start;
-		int j = mid + 1;
-		
-		for(int k = start; k <= end; k++) {
-			if ( (j > end) || ( (i <= mid) && (tempArray[i] <= tempArray[j]) ) ) {
-				arr[k] = tempArray[i++];
-			} else {
-				arr[k] = tempArray[j++];
-			}
-		}
-	}
-
-	public static void insertionSort(int[] arr) {
-		insertionSort(arr, 0, arr.length - 1);
-	}
-
-	public static void insertionSort(int[] arr, int start, int end) {
-		int element;
-		int j;
-		for (int i = (start+1); i <= end; i++) {
-			element = arr[i];
-			for (j = (i-1); j >= start && element < arr[j]; j--) {
-				arr[j+1] = arr[j];
-			}
-			arr[++j] = element;
-		}
-	}
-
-	public static void mergeSort1(int[] arr) {
-		mergeSortOne(arr, 0, arr.length - 1);
-	}
-
-
-	private static void mergeSortOne(int[] arr, int start, int end) {
-		if (start == end) {
-			return;
-		}
-		int mid = start + (end - start)/2;
-		mergeSortOne(arr, start, mid);
-		mergeSortOne(arr, mid + 1, end);
-		mergeOne(arr, start, mid, end);
-	}
-
-	private static void mergeOne(int[] arr, int start, int mid, int end) {
-
-		// Initializing two arrays leftArray and rightArray
-		int[] lArray = new int[mid - start + 1];
-		int[] rArray = new int[end - mid];
-
-		System.arraycopy(arr, start, lArray, 0, mid - start + 1);
-		System.arraycopy(arr, mid + 1, rArray, 0, end - mid);
-
-		int lIndex = 0; // Index for lArray
-		int rIndex = 0; // Index for rArray
-
-		for(int k = start; k <= end; k++) {
-			if ( (rIndex >= (rArray.length)) || ( (lIndex < lArray.length) && (lArray[lIndex] <= rArray[rIndex]) ) ) {
-				arr[k] = lArray[lIndex++];
-			} else {
-				arr[k] = rArray[rIndex++];
-			}
 		}
 	}
 
