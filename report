@@ -1,0 +1,82 @@
+Choice1 is insertion sort
+Choice2 is Mergesort take1
+choice3 is mergesort take2
+choice4 is mergesort take3
+
+1. n = 8M
+
+insertion sort:
+infinity
+
+Choice: 2
+Time: 1594 msec.
+Memory: 83 MB / 165 MB.
+
+Choice: 3
+Time: 1164 msec.
+Memory: 306 MB / 321 MB.
+
+Choice: 4
+Time: 1197 msec.
+Memory: 306 MB / 321 MB.
+
+
+
+2. n = 16M
+
+insertion sort:
+infinity
+
+Choice: 2
+Time: 3269 msec.
+Memory: 418 MB / 516 MB.
+
+Choice: 3
+Time: 2817 msec.
+Memory: 1538 MB / 1994 MB.
+
+Choice: 4
+Time: 2423 msec.
+Memory: 1538 MB / 1995 MB.
+
+
+
+3. n = 32M
+
+insertion sort:
+infinity
+
+Choice: 2
+Time: 7265 msec.
+Memory: 275 MB / 400 MB.
+
+Choice: 3
+Time: 5579 msec.
+Memory: 1598 MB / 1917 MB.
+
+Choice: 4
+Time: 5457 msec.
+Memory: 1598 MB / 1917 MB.
+
+
+
+4. n = 64M
+
+insertion sort:
+infinity
+
+Choice: 2
+Time: 21928 msec.
+Memory: 683 MB / 1035 MB.
+
+Choice: 3
+Time: 23500 msec.
+Memory: 1721 MB / 1946 MB.
+
+Choice: 4
+Time: 14235 msec.
+Memory: 1721 MB / 1946 MB.
+
+
+Conclusion: Overall, time to run will be as follows
+mergesort take3 < mergesort take2 < mergesort take1 < insertion sort 
